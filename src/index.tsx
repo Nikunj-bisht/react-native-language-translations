@@ -1,12 +1,12 @@
 import { NativeModules, Platform } from 'react-native';
 
 const LINKING_ERROR =
-  `The package 'react-native-language-translations' doesn't seem to be linked. Make sure: \n\n` +
+  `The package 'react-native-language-translation' doesn't seem to be linked. Make sure: \n\n` +
   Platform.select({ ios: "- You have run 'pod install'\n", default: '' }) +
   '- You rebuilt the app after installing the package\n' +
   '- You are not using Expo Go\n';
 
-const LanguageTranslations = NativeModules.LanguageTranslations
+const LanguageTranslation = NativeModules.LanguageTranslations
   ? NativeModules.LanguageTranslations
   : new Proxy(
       {},
@@ -17,6 +17,22 @@ const LanguageTranslations = NativeModules.LanguageTranslations
       }
     );
 
-export function multiply(a: number, b: number): Promise<number> {
-  return LanguageTranslations.multiply(a, b);
+export function createLanguageTranslator(
+  a: string,
+  b: string,
+  callBack: Function
+) {
+  LanguageTranslation.createLanguageTranslator(a, b, (val: Boolean) => {
+    callBack(val);
+  });
+}
+
+export function translate(a: string, callBack: Function) {
+  LanguageTranslation.transLate(a, (result: any) => {
+    callBack(result);
+  });
+}
+
+export function getAllLanguages(callBack: Function) {
+  LanguageTranslation.getAllLanguages(callBack);
 }
